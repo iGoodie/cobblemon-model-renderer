@@ -17,7 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "cobblemon-model-renderer": ["./lib/main.tsx"]
+      "cobblemon-model-renderer": ["lib/main.ts"]
     }
   },
   "include": ["./src", "./lib"],

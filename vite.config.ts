@@ -19,7 +19,7 @@ export default defineConfig(() => ({
   ],
   build: {
     lib: {
-      entry: resolve("lib", "main.tsx"),
+      entry: resolve("lib", "main.ts"),
       name: "ReactFeatureFlag",
       formats: ["cjs", "es", "umd", "iife"],
       fileName: (format) => `cobblemon-model-renderer.${format}.js`,
