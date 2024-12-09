@@ -1,13 +1,9 @@
-import {
-  Environment,
-  PerspectiveCamera,
-  View
-} from "@react-three/drei";
+import { Environment, PerspectiveCamera, View } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { foo } from "cobblemon-model-renderer";
 import React, { useRef } from "react";
 import * as THREE from "three";
 
-// Rotating Cube Component
 const RotatingCube: React.FC = () => {
   const ref = useRef<THREE.Mesh>(null);
 
@@ -53,13 +49,20 @@ function Common({ color }: { color?: string }) {
       <pointLight position={[20, 30, 10]} intensity={1} />
       <pointLight position={[-10, -10, -10]} color="blue" />
       <Environment preset="dawn" />
-      <PerspectiveCamera makeDefault fov={20} position={[0, 0, 6]} />
+      <PerspectiveCamera makeDefault fov={2} position={[0, 0, 100]} />
+      {/* <OrthographicCamera
+        makeDefault
+        position={[0, 0, 6]}
+        // args={[-10, -10, 10, 10, 1, 1000]}
+      /> */}
     </>
   );
 }
 
 const App: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
+
+  console.log(foo());
 
   return (
     <div
