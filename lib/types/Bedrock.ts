@@ -62,7 +62,9 @@ export namespace Bedrock {
   }
 
   interface FaceUV {
+    /** Specifies the uv origin for the face. For this face, it is the upper-left corner, when looking at the face with y being up. */
     uv: [number, number];
+    /** The face maps this many texels from the uv origin. If not specified, the box dimensions are used instead. */
     uv_size?: [number, number];
     material_instance?: string;
   }
