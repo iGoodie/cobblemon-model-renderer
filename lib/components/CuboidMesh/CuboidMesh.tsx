@@ -12,14 +12,6 @@ function calcTexel(u: number, v: number, w: number, h: number) {
   const bottom = 1 - v / 64;
   const top = bottom - h / 64;
   return [left, right, bottom, top];
-
-  // // prettier-ignore
-  // return [
-  //   left, top,
-  //   right, top,
-  //   left, bottom,
-  //   right, bottom,
-  // ]
 }
 
 function generateUVAttrib(
@@ -115,6 +107,8 @@ export function CuboidMesh(props: {
   const size = props.cube.size ?? [1, 1, 1];
   const uv = props.cube.uv ?? [0, 0];
 
+  const inflation = props.cube.inflate ?? 0;
+
   // TODO: Manually build faces based on spec
   // const geo = new THREE.BoxGeometry(1,1,1);
   // geo.
@@ -167,13 +161,24 @@ export function CuboidMesh(props: {
       // key={Math.random()}
       ref={meshRef}
       position={[
-        origin[0] + size[0] / 2,
-        origin[1] + size[1] / 2,
-        origin[2] + size[2] / 2,
+        origin[0] - inflation + (size[0] + inflation * 2) / 2,
+        origin[1] - inflation + (size[1] + inflation * 2) / 2,
+        origin[2] - inflation + (size[2] + inflation * 2) / 2,
       ]}
     >
-      <boxGeometry ref={geometryRef} args={size} />
-      <meshToonMaterial map={props.texture} transparent alphaTest={0.00000001}/>
+      <boxGeometry
+        ref={geometryRef}
+        args={[
+          size[0] + inflation * 2,
+          size[1] + inflation * 2,
+          size[2] + inflation * 2,
+        ]}
+      />
+      <meshToonMaterial
+        map={props.texture}
+        transparent
+        alphaTest={0.00000001}
+      />
     </mesh>
   );
 }

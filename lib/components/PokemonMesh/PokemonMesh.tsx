@@ -10,7 +10,7 @@ export function PokemonMesh(props: {
   geo: Bedrock.ModelGeo;
   texture?: THREE.Texture;
 }) {
-  const ref = useRef<THREE.Group>(null);
+  const ref = useRef<THREE.Mesh>(null);
 
   const bones = props.geo["minecraft:geometry"].at(0)?.bones;
 
@@ -31,19 +31,19 @@ export function PokemonMesh(props: {
 
   useFrame(() => {
     if (ref.current) {
-      // ref.current.rotation.y = 3*Math.PI / 4;
+      // ref.current.rotation.y = Math.PI / 4;
       // ref.current.rotation.x = (-3 * Math.PI) / 4;
       ref.current.rotation.y += 0.006;
     }
   });
 
   return (
-    <group ref={ref} scale={[1, 1, 1]}>
+    <mesh ref={ref} scale={[1, 1, 1]}>
       {bones
         ?.flatMap((bone) => (bone.cubes ?? []).map((c) => [bone, c] as const))
         .map(([bone, cube], i) => (
           <CuboidMesh key={i} cube={cube} texture={texture} />
         ))}
-    </group>
+    </mesh>
   );
 }
