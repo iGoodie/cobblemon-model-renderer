@@ -174,7 +174,7 @@ export function CuboidMesh(props: {
           size[2] + inflation * 2,
         ]}
       />
-      <meshToonMaterial
+      <meshStandardMaterial
         map={props.texture}
         transparent
         alphaTest={0.00000001}

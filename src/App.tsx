@@ -114,7 +114,7 @@ const App: React.FC = () => {
         <View id="pokemon1" style={{ width: 400, height: 400 }}>
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
-          <ambientLight intensity={0.5} color={0xffffffff} />
+          <ambientLight intensity={1.3} color={0xffffffff} />
           <directionalLight position={[-1, -1, 10]} />
           {/* <PerspectiveCamera
             makeDefault
@@ -133,7 +133,7 @@ const App: React.FC = () => {
         <View id="pokemon2" style={{ width: 400, height: 400 }}>
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
-          <ambientLight intensity={0.5} color={0xffffffff} />
+          <ambientLight intensity={1.3} color={0xffffffff} />
           <directionalLight position={[-1, -1, 10]} />
           {/* <PerspectiveCamera
             makeDefault
@@ -155,7 +155,7 @@ const App: React.FC = () => {
         <View id="sphere" style={{ width: 500, height: 500 }}>
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
-          <ambientLight intensity={0.5} color={0xffffffff} />
+          <ambientLight intensity={1.3} color={0xffffffff} />
           <directionalLight position={[-1, -1, 10]} />
           <OrthographicCamera
             makeDefault
