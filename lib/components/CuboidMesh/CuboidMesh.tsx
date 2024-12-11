@@ -1,7 +1,8 @@
 import { useFrame } from "@react-three/fiber";
+import { PivotGroup } from "lib/components/PivotGroup/PivotGroup";
 import { Bedrock } from "lib/types/Bedrock";
 import { thru } from "lib/utils/thru";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils";
 
@@ -107,6 +108,7 @@ export function CuboidMesh(props: {
   const uv = props.cube.uv ?? [0, 0];
 
   const inflation = props.cube.inflate ?? 0;
+  const rotation = props.cube.rotation ?? [0, 0, 0];
 
   // TODO: Manually build faces based on spec
   // const geo = new THREE.BoxGeometry(1,1,1);
@@ -122,62 +124,38 @@ export function CuboidMesh(props: {
     geometryRef.current.setAttribute("uv", generateUVAttrib(uv, size));
   });
 
-  useEffect(() => {
-    if (!meshRef.current) return;
-
-    const rotation = props.cube.rotation ?? [0, 0, 0];
-
-    const pivot = props.cube.pivot ?? [
-      (size[0] - origin[0]) / 2,
-      (size[1] - origin[1]) / 2,
-      (size[2] - origin[2]) / 2,
-    ];
-
-    const translation = [
-      pivot[0] - origin[0] - size[0] / 2,
-      pivot[1] - origin[1] - size[1] / 2,
-      pivot[2] - origin[2] - size[2] / 2,
-    ] as const;
-
-    meshRef.current.translateX(translation[0]);
-    meshRef.current.translateY(translation[1]);
-    meshRef.current.translateZ(translation[2]);
-    meshRef.current.setRotationFromEuler(
-      new THREE.Euler(
+  return (
+    <PivotGroup
+      pivot={props.cube.pivot ?? [0, 0, 0]}
+      rotation={[
         degToRad(rotation[0]),
         degToRad(rotation[1]),
         degToRad(rotation[2]),
-        "XYZ"
-      )
-    );
-    meshRef.current.translateX(-translation[0]);
-    meshRef.current.translateY(-translation[1]);
-    meshRef.current.translateZ(-translation[2]);
-  }, []);
-
-  return (
-    <mesh
-      // key={Math.random()}
-      ref={meshRef}
-      position={[
-        origin[0] - inflation + (size[0] + inflation * 2) / 2,
-        origin[1] - inflation + (size[1] + inflation * 2) / 2,
-        origin[2] - inflation + (size[2] + inflation * 2) / 2,
       ]}
     >
-      <boxGeometry
-        ref={geometryRef}
-        args={[
-          size[0] + inflation * 2,
-          size[1] + inflation * 2,
-          size[2] + inflation * 2,
+      <mesh
+        // key={Math.random()}
+        ref={meshRef}
+        position={[
+          origin[0] - inflation + (size[0] + inflation * 2) / 2,
+          origin[1] - inflation + (size[1] + inflation * 2) / 2,
+          origin[2] - inflation + (size[2] + inflation * 2) / 2,
         ]}
-      />
-      <meshStandardMaterial
-        map={props.texture}
-        transparent
-        alphaTest={0.00000001}
-      />
-    </mesh>
+      >
+        <boxGeometry
+          ref={geometryRef}
+          args={[
+            size[0] + inflation * 2,
+            size[1] + inflation * 2,
+            size[2] + inflation * 2,
+          ]}
+        />
+        <meshStandardMaterial
+          map={props.texture}
+          transparent
+          alphaTest={0.00000001}
+        />
+      </mesh>
+    </PivotGroup>
   );
 }

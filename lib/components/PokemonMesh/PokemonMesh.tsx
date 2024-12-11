@@ -1,12 +1,12 @@
 import { useFrame, useLoader } from "@react-three/fiber";
 import { CuboidMesh } from "lib/components/CuboidMesh/CuboidMesh";
+import { PivotGroup } from "lib/components/PivotGroup/PivotGroup";
 import { Bedrock } from "lib/types/Bedrock";
-import { Fragment, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { degToRad } from "three/src/math/MathUtils";
 import BulbasaurTexture from "../../../assets/textures/bulbasaur_m.png";
 import CharmanderTexture from "../../../assets/textures/charmander.png";
-import { PivotControls } from "@react-three/drei";
-import { degToRad } from "three/src/math/MathUtils";
 
 interface BoneTree extends Exclude<Bedrock.Bone, "parent"> {
   children: BoneTree[];
@@ -60,8 +60,7 @@ export function PokemonMesh(props: {
 
   useFrame(() => {
     if (ref.current) {
-      
-      ref.current.rotation.y = -3*Math.PI / 4;
+      ref.current.rotation.y = (-3 * Math.PI) / 4;
       // ref.current.rotation.x = (-3 * Math.PI) / 4;
       // ref.current.rotation.y += 0.006;
     }
@@ -73,24 +72,18 @@ export function PokemonMesh(props: {
     return boneTree.children.map((boneNode) => {
       return (
         <group key={boneNode.name}>
-          <group
-            position={boneNode.pivot}
+          <PivotGroup
+            pivot={boneNode.pivot ?? [0, 0, 0]}
             rotation={[
               -degToRad(boneNode.rotation?.[0] ?? 0),
               -degToRad(boneNode.rotation?.[1] ?? 0),
               -degToRad(boneNode.rotation?.[2] ?? 0),
             ]}
           >
-            <group
-              position={
-                boneNode.pivot?.map((p) => -p) as [number, number, number]
-              }
-            >
-              {boneNode.cubes?.map((cube, i) => (
-                <CuboidMesh key={i} cube={cube} texture={texture} />
-              ))}
-            </group>
-          </group>
+            {boneNode.cubes?.map((cube, i) => (
+              <CuboidMesh key={i} cube={cube} texture={texture} />
+            ))}
+          </PivotGroup>
           {boneNode.children.length != 0 && renderBoneTree(boneNode)}
         </group>
       );
@@ -98,7 +91,7 @@ export function PokemonMesh(props: {
   };
 
   return (
-    <mesh ref={ref} scale={3}>
+    <mesh ref={ref} scale={1}>
       {renderBoneTree(boneTree)}
     </mesh>
   );
