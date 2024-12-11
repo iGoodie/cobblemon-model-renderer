@@ -22,6 +22,7 @@ export namespace Bedrock {
   export interface Bone {
     name: string;
     parent?: string;
+    /** The bone pivots around this point (in model space units). */
     pivot?: [number, number, number];
     rotation?: [number, number, number];
     mirror?: boolean;

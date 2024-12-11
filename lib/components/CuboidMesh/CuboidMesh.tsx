@@ -3,8 +3,7 @@ import { Bedrock } from "lib/types/Bedrock";
 import { thru } from "lib/utils/thru";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-
-const DEGREE_TO_RADIANS = Math.PI / 180;
+import { degToRad } from "three/src/math/MathUtils";
 
 function calcTexel(u: number, v: number, w: number, h: number) {
   const left = u / 64;
@@ -145,9 +144,9 @@ export function CuboidMesh(props: {
     meshRef.current.translateZ(translation[2]);
     meshRef.current.setRotationFromEuler(
       new THREE.Euler(
-        rotation[0] * DEGREE_TO_RADIANS,
-        rotation[1] * DEGREE_TO_RADIANS,
-        rotation[2] * DEGREE_TO_RADIANS,
+        degToRad(rotation[0]),
+        degToRad(rotation[1]),
+        degToRad(rotation[2]),
         "XYZ"
       )
     );
