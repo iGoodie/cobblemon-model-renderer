@@ -12,6 +12,7 @@ import * as THREE from "three";
 
 import BulbasaurGeoJson from "../assets/models/bulbasaur.geo.json";
 import CharmanderGeoJson from "../assets/models/charmander.geo.json";
+import DebugGeoJson from "../assets/models/debug.geo.json";
 import { CuboidMesh, PokemonMesh } from "lib/main";
 import { Bedrock } from "lib/types/Bedrock";
 import DebugTexture from "../assets/textures/debug.png";
@@ -83,32 +84,7 @@ function DebugMesh() {
   }, [texture]);
 
   return (
-    <group rotation={[0.4, 0, 0]}>
-      <CuboidMesh
-        texture={texture}
-        cube={{
-          origin: [-8, 0, -8],
-          size: [16, 1, 16],
-          uv: [0, 0],
-        }}
-      />
-      <CuboidMesh
-        cube={{
-          origin: [6, 1, 6],
-          size: [2, 1, 2],
-          pivot: [7, 1, 7],
-          rotation: [0, 0, 30],
-        }}
-      />
-      <CuboidMesh
-        cube={{
-          origin: [-8, 1, -8],
-          size: [2, 2, 2],
-          pivot: [-7, 1, -7],
-          rotation: [30, 0, 0],
-        }}
-      />
-    </group>
+    <PokemonMesh geo={DebugGeoJson as Bedrock.ModelGeo} texture={texture} />
   );
 }
 
@@ -148,9 +124,9 @@ const App: React.FC = () => {
           /> */}
           <OrthographicCamera
             makeDefault
-            position={[0, 10, 100]}
+            position={[0, 75, 100]}
             zoom={8}
-            rotation={[-0.1, 0, 0]}
+            rotation={[-0.6, 0, 0]}
           />
           <PokemonMesh geo={BulbasaurGeoJson as Bedrock.ModelGeo} />
         </View>
@@ -167,9 +143,9 @@ const App: React.FC = () => {
           /> */}
           <OrthographicCamera
             makeDefault
-            position={[0, 30, 100]}
+            position={[0, 75, 100]}
             zoom={8}
-            rotation={[-0.3, 0, 0]}
+            rotation={[-0.6, 0, 0]}
           />
           <PokemonMesh geo={CharmanderGeoJson as Bedrock.ModelGeo} />
         </View>
@@ -181,11 +157,11 @@ const App: React.FC = () => {
           <color attach="background" args={["pink"]} />{" "}
           <ambientLight intensity={0.5} color={0xffffffff} />
           <directionalLight position={[-1, -1, 10]} />
-          <PerspectiveCamera
+          <OrthographicCamera
             makeDefault
-            fov={2}
-            zoom={0.1}
-            position={[0, 0, 100]}
+            position={[0, 75, 100]}
+            zoom={8}
+            rotation={[-0.6, 0, 0]}
           />
           <DebugMesh />
         </View>

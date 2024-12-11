@@ -6,18 +6,23 @@ import * as THREE from "three";
 import BulbasaurTexture from "../../../assets/textures/bulbasaur_m.png";
 import CharmanderTexture from "../../../assets/textures/charmander.png";
 
-export function PokemonMesh(props: { geo: Bedrock.ModelGeo }) {
+export function PokemonMesh(props: {
+  geo: Bedrock.ModelGeo;
+  texture?: THREE.Texture;
+}) {
   const ref = useRef<THREE.Group>(null);
 
   const bones = props.geo["minecraft:geometry"].at(0)?.bones;
 
-  const texture = useLoader(
+  const defaultTexture = useLoader(
     THREE.TextureLoader,
     props.geo["minecraft:geometry"].at(0)?.description.identifier ===
       "geometry.bulbasaur"
       ? BulbasaurTexture
       : CharmanderTexture
   );
+
+  const texture = props.texture ?? defaultTexture;
 
   useEffect(() => {
     texture.minFilter = THREE.NearestFilter;
@@ -26,13 +31,14 @@ export function PokemonMesh(props: { geo: Bedrock.ModelGeo }) {
 
   useFrame(() => {
     if (ref.current) {
-      // ref.current.rotation.y = Math.PI;
+      // ref.current.rotation.y = 3*Math.PI / 4;
+      // ref.current.rotation.x = (-3 * Math.PI) / 4;
       ref.current.rotation.y += 0.006;
     }
   });
 
   return (
-    <group ref={ref}>
+    <group ref={ref} scale={[1, 1, 1]}>
       {bones
         ?.flatMap((bone) => (bone.cubes ?? []).map((c) => [bone, c] as const))
         .map(([bone, cube], i) => (

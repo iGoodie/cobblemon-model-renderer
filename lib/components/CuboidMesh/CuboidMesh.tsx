@@ -1,52 +1,104 @@
 import { useFrame } from "@react-three/fiber";
 import { Bedrock } from "lib/types/Bedrock";
+import { thru } from "lib/utils/thru";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 const DEGREE_TO_RADIANS = Math.PI / 180;
 
-// function old_prepFaceUV(uv: [number, number], size: [number, number, number]) {
-//   const left = uv[0] / 16;
-//   const right = 16 / 16;
-//   const bottom = 1 - uv[1] / 16;
-//   const top = 1 - 16 / 16;
-
-//   // prettier-ignore
-//   return [
-//     left, bottom,
-//     right, bottom,
-//     left, top,
-//     right, top
-//   ];
-// }
-
-function prepFaceUV(u: number, v: number, w: number, h: number) {
+function calcTexel(u: number, v: number, w: number, h: number) {
   const left = u / 64;
   const right = left + w / 64;
   const bottom = 1 - v / 64;
-  const top = 1 - h / 64;
+  const top = bottom - h / 64;
+  return [left, right, bottom, top];
 
-  // prettier-ignore
-  return [
-    left, bottom, 
-    right, bottom, 
-    left, top, 
-    right, top
-  ];
+  // // prettier-ignore
+  // return [
+  //   left, top,
+  //   right, top,
+  //   left, bottom,
+  //   right, bottom,
+  // ]
 }
 
-function generateUVProperty(
+function generateUVAttrib(
   uv: [number, number],
   [sx, sy, sz]: [number, number, number]
 ) {
   return new THREE.BufferAttribute(
     new Float32Array([
-      ...prepFaceUV(uv[0], uv[1], 64, 64), // 0 - East
-      ...prepFaceUV(uv[0], uv[1], 64, 64), // 1 - West
-      ...prepFaceUV(uv[0] + sz, uv[1], sz, sx), // 2 - Up
-      ...prepFaceUV(uv[0], uv[1], 64, 64), // 3 - Down
-      ...prepFaceUV(uv[0], uv[1], 64, 64), // 4 - South
-      ...prepFaceUV(uv[0], uv[1], 64, 64), // 5 - North
+      ...thru(
+        // 0 - East = +X = Right
+        calcTexel(uv[0] + sz + sx, uv[1] + sz, sz, sy),
+        // prettier-ignore
+        ([left, right, bottom, top]) => [
+          right, bottom,
+          left, bottom,
+          right, top,
+          left,top,
+        ]
+      ),
+
+      ...thru(
+        // 1 - West = -X = Left
+        calcTexel(uv[0], uv[1] + sz, sz, sy),
+        // prettier-ignore
+        ([left, right, bottom, top]) => [
+          right, bottom,
+          left, bottom,
+          right, top,
+          left,top,
+        ]
+      ),
+
+      ...thru(
+        // 2 - Up = +Y = Up
+        calcTexel(uv[0] + sz, uv[1], sx, sz),
+        // prettier-ignore
+        ([left, right, bottom, top]) => [
+          left,top,
+          right, top,
+          left, bottom,
+          right, bottom,
+        ]
+      ),
+
+      ...thru(
+        // 3 - Down = -Y = Down
+        calcTexel(uv[0] + sx + sz, uv[1], sx, sy),
+        // prettier-ignore
+        ([left, right, bottom, top]) => [
+          left, bottom,
+          right, bottom,
+          left,top,
+          right, top,
+        ]
+      ),
+
+      ...thru(
+        // 4 - North = -Z = Back
+        calcTexel(uv[0] + sx + 2 * sz, uv[1] + sz, sx, sy),
+        // prettier-ignore
+        ([left, right, bottom, top]) => [
+          left, bottom,
+          right, bottom,
+          left,top,
+          right, top,
+        ]
+      ),
+
+      ...thru(
+        // 5 - South = +Z = Front
+        calcTexel(uv[0] + sz, uv[1] + sz, sx, sy),
+        // prettier-ignore
+        ([left, right, bottom, top]) => [
+          right, bottom,
+          left, bottom,
+          right, top,
+          left,top,
+        ]
+      ),
     ]),
     2
   );
@@ -63,13 +115,6 @@ export function CuboidMesh(props: {
   const size = props.cube.size ?? [1, 1, 1];
   const uv = props.cube.uv ?? [0, 0];
 
-  // North = -Z = Back
-  // South = +Z = Front
-  // Down = -Y = Down
-  // Up = +Y = Up
-  // East = +X = Right
-  // West = -X = Left
-
   // TODO: Manually build faces based on spec
   // const geo = new THREE.BoxGeometry(1,1,1);
   // geo.
@@ -81,7 +126,7 @@ export function CuboidMesh(props: {
       return;
     }
 
-    geometryRef.current.setAttribute("uv", generateUVProperty(uv, size));
+    geometryRef.current.setAttribute("uv", generateUVAttrib(uv, size));
   });
 
   useEffect(() => {
@@ -128,7 +173,7 @@ export function CuboidMesh(props: {
       ]}
     >
       <boxGeometry ref={geometryRef} args={size} />
-      <meshStandardMaterial color="white" map={props.texture} />
+      <meshToonMaterial map={props.texture} transparent alphaTest={0.00000001}/>
     </mesh>
   );
 }
