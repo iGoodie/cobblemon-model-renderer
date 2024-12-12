@@ -5,14 +5,12 @@ import { Bedrock } from "lib/types/Bedrock";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils";
-import BulbasaurTexture from "../../../assets/textures/bulbasaur_m.png";
-import CharmanderTexture from "../../../assets/textures/charmander.png";
 import { buildBoneTree } from "lib/utils/mesh";
 
-function useBoneMesh(bones: Bedrock.Bone[], texture?: THREE.Texture) {
+function useBoneMesh(bones: Bedrock.GeoBone[], texture?: THREE.Texture) {
   const boneRefs = useRef<Record<string, THREE.Group | null>>({});
 
-  const boneTreex = useMemo(
+  const boneTree = useMemo(
     () =>
       buildBoneTree(
         bones,
@@ -22,8 +20,8 @@ function useBoneMesh(bones: Bedrock.Bone[], texture?: THREE.Texture) {
     [bones]
   );
 
-  const renderBoneTree = (boneTree: (typeof boneTreex)[number]) => {
-    return boneTree.children.map((boneNode) => {
+  const renderBoneTree = (tree: (typeof boneTree)[number]) => {
+    return tree.children.map((boneNode) => {
       return (
         <group key={boneNode.name}>
           <group
@@ -50,27 +48,19 @@ function useBoneMesh(bones: Bedrock.Bone[], texture?: THREE.Texture) {
 
   return {
     boneRefs,
-    meshJsx: renderBoneTree({ name: "$root", children: boneTreex }),
+    meshJsx: renderBoneTree({ name: "$root", children: boneTree }),
   };
 }
 
 export function PokemonMesh(props: {
-  geo: Bedrock.ModelGeo;
-  texture?: THREE.Texture;
+  geo: Bedrock.ModelGeoConfig;
+  textureUrl: string;
 }) {
   const ref = useRef<THREE.Mesh>(null);
 
   const bonesConfig = props.geo["minecraft:geometry"].at(0)?.bones ?? [];
 
-  const defaultTexture = useLoader(
-    THREE.TextureLoader,
-    props.geo["minecraft:geometry"].at(0)?.description.identifier ===
-      "geometry.bulbasaur"
-      ? BulbasaurTexture
-      : CharmanderTexture
-  );
-
-  const texture = props.texture ?? defaultTexture;
+  const texture = useLoader(THREE.TextureLoader, props.textureUrl);
 
   const { boneRefs, meshJsx } = useBoneMesh(bonesConfig, texture);
 
@@ -92,9 +82,5 @@ export function PokemonMesh(props: {
     }
   });
 
-  return (
-    <mesh ref={ref} scale={1.25}>
-      {meshJsx}
-    </mesh>
-  );
+  return <mesh ref={ref}>{meshJsx}</mesh>;
 }

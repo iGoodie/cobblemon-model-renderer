@@ -112,6 +112,8 @@ export function CuboidMesh(props: {
   const rotation = props.cube.rotation ?? [0, 0, 0];
 
   // TODO: Manually build faces based on spec
+  // - Will fix cube edge gaps
+  // - Will fix size=0 faces rendering a few pixels
   // const geo = new THREE.BoxGeometry(1,1,1);
   // geo.
 

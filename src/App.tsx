@@ -9,13 +9,19 @@ import {
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { CuboidMesh, PokemonMesh } from "lib/main";
+import { Bedrock } from "lib/types/Bedrock";
 
 import BulbasaurGeoJson from "../assets/models/bulbasaur.geo.json";
 import CharmanderGeoJson from "../assets/models/charmander.geo.json";
 import DebugGeoJson from "../assets/models/debug.geo.json";
-import { CuboidMesh, PokemonMesh } from "lib/main";
-import { Bedrock } from "lib/types/Bedrock";
+
+import BulbasaurAnimJson from "../assets/animations/bulbasaur.animation.json";
+import CharmanderAnimJson from "../assets/animations/charmander.animation.json";
+
 import DebugTexture from "../assets/textures/debug.png";
+import BulbasaurTexture from "../assets/textures/bulbasaur_m.png";
+import CharmanderTexture from "../assets/textures/charmander.png";
 
 const RotatingCube: React.FC = () => {
   const ref = useRef<THREE.Mesh>(null);
@@ -75,19 +81,6 @@ function Common({ color }: { color?: string }) {
   );
 }
 
-function DebugMesh() {
-  const texture = useLoader(THREE.TextureLoader, DebugTexture);
-
-  useEffect(() => {
-    texture.minFilter = THREE.NearestFilter;
-    texture.magFilter = THREE.NearestFilter;
-  }, [texture]);
-
-  return (
-    <PokemonMesh geo={DebugGeoJson as Bedrock.ModelGeo} texture={texture} />
-  );
-}
-
 const App: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -128,7 +121,10 @@ const App: React.FC = () => {
             zoom={8}
             rotation={[-0.6, 0, 0]}
           />
-          <PokemonMesh geo={BulbasaurGeoJson as Bedrock.ModelGeo} />
+          <PokemonMesh
+            geo={BulbasaurGeoJson as Bedrock.ModelGeoConfig}
+            textureUrl={BulbasaurTexture}
+          />
         </View>
         <View id="pokemon2" style={{ width: 400, height: 400 }}>
           {/* <Common color="pink" /> */}
@@ -147,7 +143,10 @@ const App: React.FC = () => {
             zoom={8}
             rotation={[-0.6, 0, 0]}
           />
-          <PokemonMesh geo={CharmanderGeoJson as Bedrock.ModelGeo} />
+          <PokemonMesh
+            geo={CharmanderGeoJson as Bedrock.ModelGeoConfig}
+            textureUrl={CharmanderTexture}
+          />
         </View>
       </div>
 
@@ -163,7 +162,10 @@ const App: React.FC = () => {
             zoom={8}
             rotation={[-0.6, 0, 0]}
           />
-          <DebugMesh />
+          <PokemonMesh
+            geo={DebugGeoJson as Bedrock.ModelGeoConfig}
+            textureUrl={DebugTexture}
+          />
         </View>
       </div>
 
