@@ -103,6 +103,7 @@ export function CuboidMesh(props: {
   const meshRef = useRef<THREE.Mesh>(null);
   const geometryRef = useRef<THREE.BoxGeometry>(null);
 
+  // TODO: inheritability from bone
   const origin = props.cube.origin ?? [0, 0, 0];
   const size = props.cube.size ?? [1, 1, 1];
   const uv = props.cube.uv ?? [0, 0];
