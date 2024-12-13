@@ -1,10 +1,9 @@
 import { useFrame, useThree } from "@react-three/fiber";
+import { PivotGroupRef } from "lib/components/PivotGroup/PivotGroup";
 import { Bedrock } from "lib/types/Bedrock";
 import { MolangExpression } from "lib/utils/molang";
 import { mapValues } from "lib/utils/object";
-import { thru } from "lib/utils/thru";
 import { useRef } from "react";
-import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils";
 
 interface Animator {
@@ -67,12 +66,16 @@ function loadAnimation(config: Bedrock.ActorAnimation) {
 }
 
 export function useAnimationPlayer(
-  bones: Record<string, THREE.Group | null>,
+  bones: Record<string, PivotGroupRef | null>,
   animations: Record<string, Bedrock.ActorAnimation>
 ) {
   const activeAnim = useRef<ReturnType<typeof loadAnimation>>();
 
   const { clock } = useThree();
+
+  // TODO: Allow pause/play
+  // TODO: Allow playing multiple animations
+  // TODO: A way to reset to T-Pose
 
   useFrame(() => {
     if (activeAnim.current != null) {
@@ -83,13 +86,12 @@ export function useAnimationPlayer(
         if (bone == null) return;
 
         v.position?.update(now);
-        bone.position.set(...(v.position?.calc() ?? [0, 0, 0]));
-
         v.rotation?.update(now);
-        const [x, y, z] = v.rotation?.calc() ?? [0, 0, 0];
-        bone.rotation.set(degToRad(x), degToRad(y), degToRad(z));
-
         v.scale?.update(now);
+
+        const [xRot, yRot, zRot] = v.rotation?.calc() ?? [0, 0, 0];
+        bone.position.set(...(v.position?.calc() ?? [0, 0, 0]));
+        bone.rotation.set(-degToRad(xRot), degToRad(yRot), -degToRad(zRot));
         bone.scale.set(...(v.scale?.calc() ?? [1, 1, 1]));
       });
     }
@@ -98,6 +100,7 @@ export function useAnimationPlayer(
   return {
     playAnimation(animationName: string) {
       const animation = animations[animationName];
+
       if (animation == null) return;
       activeAnim.current = loadAnimation(animation);
     },

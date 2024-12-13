@@ -1,15 +1,18 @@
 import { useFrame, useLoader } from "@react-three/fiber";
 import { CuboidMesh } from "lib/components/CuboidMesh/CuboidMesh";
-import { PivotGroup } from "lib/components/PivotGroup/PivotGroup";
+import {
+  PivotGroup,
+  PivotGroupRef,
+} from "lib/components/PivotGroup/PivotGroup";
+import { useAnimationPlayer } from "lib/hooks/useAnimationPlayer";
 import { Bedrock } from "lib/types/Bedrock";
+import { buildBoneTree } from "lib/utils/mesh";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils";
-import { buildBoneTree } from "lib/utils/mesh";
-import { useAnimationPlayer } from "lib/hooks/useAnimationPlayer";
 
 function useBoneMesh(bones: Bedrock.GeoBone[], texture?: THREE.Texture) {
-  const boneRefs = useRef<Record<string, THREE.Group | null>>({});
+  const boneRefs = useRef<Record<string, PivotGroupRef | null>>({});
 
   const boneTree = useMemo(
     () =>
@@ -24,32 +27,28 @@ function useBoneMesh(bones: Bedrock.GeoBone[], texture?: THREE.Texture) {
   const renderBoneTree = (tree: (typeof boneTree)[number]) => {
     return tree.children.map((boneNode) => {
       return (
-        <group
+        <PivotGroup
           ref={(groupRef) => (boneRefs.current[boneNode.name] = groupRef)}
           name={boneNode.name}
           key={boneNode.name}
+          pivot={boneNode.pivot ?? [0, 0, 0]}
+          rotation={[
+            -degToRad(boneNode.rotation?.[0] ?? 0),
+            -degToRad(boneNode.rotation?.[1] ?? 0),
+            -degToRad(boneNode.rotation?.[2] ?? 0),
+          ]}
         >
           {boneNode.children.length != 0 && renderBoneTree(boneNode)}
-          <PivotGroup
-            pivot={boneNode.pivot ?? [0, 0, 0]}
-            rotation={[
-              -degToRad(boneNode.rotation?.[0] ?? 0),
-              -degToRad(boneNode.rotation?.[1] ?? 0),
-              -degToRad(boneNode.rotation?.[2] ?? 0),
-            ]}
-          >
-            {boneNode.cubes?.map((cube, i) => (
-              <CuboidMesh key={i} cube={cube} texture={texture} />
-            ))}
-          </PivotGroup>
-        </group>
+          {boneNode.cubes?.map((cube, i) => (
+            <CuboidMesh key={i} cube={{ ...cube }} texture={texture} />
+          ))}
+        </PivotGroup>
       );
     });
   };
 
   return {
     boneRefs,
-    boneTree,
     meshJsx: renderBoneTree({ name: "$root", children: boneTree }),
   };
 }
@@ -65,7 +64,7 @@ export function PokemonMesh(props: {
 
   const texture = useLoader(THREE.TextureLoader, props.textureUrl);
 
-  const { boneRefs, boneTree, meshJsx } = useBoneMesh(bonesConfig, texture);
+  const { boneRefs, meshJsx } = useBoneMesh(bonesConfig, texture);
 
   const { playAnimation } = useAnimationPlayer(
     boneRefs.current,
@@ -75,17 +74,16 @@ export function PokemonMesh(props: {
   useEffect(() => {
     texture.minFilter = THREE.NearestFilter;
     texture.magFilter = THREE.NearestFilter;
-    console.log(boneTree);
-    playAnimation("animation.bulbasaur.ground_idle");
+    playAnimation("animation.bulbasaur.faint");
     playAnimation("animation.charmander.ground_idle");
   }, [texture]);
 
   useFrame(() => {
     if (ref.current) {
       // boneRefs.current?.["head"]?.rotateY(Math.random() / 25);
-      // ref.current.rotation.y = (-3 * Math.PI) / 4;
+      ref.current.rotation.y = (-3 * Math.PI) / 4;
       // ref.current.rotation.x = (-3 * Math.PI) / 4;
-      ref.current.rotation.y += 0.006;
+      // ref.current.rotation.y += 0.006;
 
       const bone = boneRefs.current["jaw"];
       if (bone) {

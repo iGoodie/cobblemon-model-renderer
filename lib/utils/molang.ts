@@ -1,7 +1,13 @@
 import { expressions, IExpression, Molang } from "molang";
 
 export class MolangExpression {
-  static molang = new Molang({}, { useCache: false });
+  static molang = new Molang(
+    {},
+    {
+      useCache: false,
+      convertUndefined: true,
+    }
+  );
 
   private ast: IExpression;
   private animTimeNodes: expressions.NumberExpression[] = [];
