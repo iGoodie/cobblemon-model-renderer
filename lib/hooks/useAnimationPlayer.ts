@@ -1,5 +1,5 @@
 import { useFrame, useThree } from "@react-three/fiber";
-import { PivotGroupRef } from "lib/components/PivotGroup/PivotGroup";
+import { PivotGroupTransformation } from "lib/components/PivotGroup/PivotGroup";
 import { Bedrock } from "lib/types/Bedrock";
 import { MolangExpression } from "lib/utils/molang";
 import { mapValues } from "lib/utils/object";
@@ -66,7 +66,7 @@ function loadAnimation(config: Bedrock.ActorAnimation) {
 }
 
 export function useAnimationPlayer(
-  bones: Record<string, PivotGroupRef | null>,
+  bones: Record<string, PivotGroupTransformation | null>,
   animations: Record<string, Bedrock.ActorAnimation>
 ) {
   const activeAnim = useRef<ReturnType<typeof loadAnimation>>();

@@ -2,7 +2,7 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { CuboidMesh } from "lib/components/CuboidMesh/CuboidMesh";
 import {
   PivotGroup,
-  PivotGroupRef,
+  PivotGroupTransformation,
 } from "lib/components/PivotGroup/PivotGroup";
 import { useAnimationPlayer } from "lib/hooks/useAnimationPlayer";
 import { Bedrock } from "lib/types/Bedrock";
@@ -12,7 +12,7 @@ import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils";
 
 function useBoneMesh(bones: Bedrock.GeoBone[], texture?: THREE.Texture) {
-  const boneRefs = useRef<Record<string, PivotGroupRef | null>>({});
+  const boneRefs = useRef<Record<string, PivotGroupTransformation | null>>({});
 
   const boneTree = useMemo(
     () =>
@@ -74,8 +74,9 @@ export function PokemonMesh(props: {
   useEffect(() => {
     texture.minFilter = THREE.NearestFilter;
     texture.magFilter = THREE.NearestFilter;
-    playAnimation("animation.bulbasaur.faint");
+    playAnimation("animation.bulbasaur.ground_idle");
     playAnimation("animation.charmander.ground_idle");
+    playAnimation("animation.squirtle.ground_idle");
   }, [texture]);
 
   useFrame(() => {
