@@ -39,7 +39,7 @@ const App: React.FC = () => {
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
           <ambientLight intensity={1.3} color={0xffffffff} />
-          <directionalLight position={[-1, -1, 10]} />
+          <directionalLight position={[10, 10, -5]} />
           {/* <PerspectiveCamera
             makeDefault
             fov={1}
@@ -67,7 +67,7 @@ const App: React.FC = () => {
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
           <ambientLight intensity={1.3} color={0xffffffff} />
-          <directionalLight position={[-1, -1, 10]} />
+          <directionalLight position={[10, 10, -5]} />
           {/* <PerspectiveCamera
       makeDefault
       fov={1}
@@ -95,7 +95,7 @@ const App: React.FC = () => {
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
           <ambientLight intensity={1.3} color={0xffffffff} />
-          <directionalLight position={[-1, -1, 10]} />
+          <directionalLight position={[10, 10, -5]} />
           <OrthographicCamera
             makeDefault
             position={[-2, 66, 100]}

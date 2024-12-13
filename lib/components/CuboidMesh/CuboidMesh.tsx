@@ -103,10 +103,10 @@ export function CuboidMesh(props: {
   const meshRef = useRef<THREE.Mesh>(null);
   const geometryRef = useRef<THREE.BoxGeometry>(null);
 
-  // TODO: inheritability from bone
   const origin = props.cube.origin ?? [0, 0, 0];
   const size = props.cube.size ?? [1, 1, 1];
   const uv = props.cube.uv ?? [0, 0];
+  const mirror = props.cube.mirror ?? false;
 
   const inflation = props.cube.inflate ?? 0;
   const rotation = props.cube.rotation ?? [0, 0, 0];
@@ -121,6 +121,7 @@ export function CuboidMesh(props: {
     if (!geometryRef.current) return;
 
     if (!Array.isArray(uv)) {
+      // TODO: Per-face attrib
       return;
     }
 
@@ -131,14 +132,14 @@ export function CuboidMesh(props: {
     <PivotGroup
       pivot={props.cube.pivot ?? [0, 0, 0]}
       rotation={[
-        degToRad(rotation[0]),
+        -degToRad(rotation[0]),
         degToRad(rotation[1]),
         degToRad(rotation[2]),
       ]}
     >
       <mesh
-        // key={Math.random()}
         ref={meshRef}
+        scale={[mirror ? -1 : 1, 1, 1]}
         position={[
           origin[0] - inflation + (size[0] + inflation * 2) / 2,
           origin[1] - inflation + (size[1] + inflation * 2) / 2,
