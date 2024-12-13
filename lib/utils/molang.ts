@@ -6,23 +6,42 @@ export class MolangExpression {
   private ast: IExpression;
   private animTimeNodes: expressions.NumberExpression[] = [];
 
-  constructor(script: string) {
-    this.ast = MolangExpression.molang.parse(script);
+  constructor(script: string, molang?: Molang) {
+    this.ast = (molang ?? MolangExpression.molang).parse(script);
 
-    this.ast.walk((node) => {
-      if (node instanceof expressions.NameExpression) {
-        if (node["name"] === "q.anim_time") {
-          const animTimeNode = new expressions.NumberExpression(0);
-          this.animTimeNodes.push(animTimeNode);
-          return animTimeNode;
-        }
-      }
-      return node;
-    });
+    this.animTimeNodes = this.replaceNodes(
+      (node): node is expressions.NameExpression =>
+        node instanceof expressions.NameExpression &&
+        node["name"] === "q.anim_time",
+      () => new expressions.NumberExpression(0)
+    );
   }
 
-  public eval(animTime: number) {
+  public replaceNodes<N extends IExpression, R extends IExpression>(
+    predicate: (node: IExpression) => node is N,
+    replacement: (node: N) => R
+  ) {
+    const replacementNodes: R[] = [];
+
+    this.ast.walk((node) => {
+      if (predicate(node)) {
+        const replacementNode = replacement(node as N);
+        replacementNodes.push(replacementNode);
+        return replacementNode;
+      }
+
+      return node;
+    });
+
+    return replacementNodes;
+  }
+
+  public updateAnimTime(animTime: number) {
     this.animTimeNodes.forEach((node) => (node["value"] = animTime));
+    return this;
+  }
+
+  public eval() {
     return this.ast.eval();
   }
 }

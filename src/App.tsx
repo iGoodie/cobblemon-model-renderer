@@ -123,6 +123,7 @@ const App: React.FC = () => {
           />
           <PokemonMesh
             geo={BulbasaurGeoJson as Bedrock.ModelGeoConfig}
+            animations={BulbasaurAnimJson as unknown as Bedrock.ActorAnimationConfig}
             textureUrl={BulbasaurTexture}
           />
         </View>
@@ -145,6 +146,7 @@ const App: React.FC = () => {
           />
           <PokemonMesh
             geo={CharmanderGeoJson as Bedrock.ModelGeoConfig}
+            animations={CharmanderAnimJson as unknown as Bedrock.ActorAnimationConfig}
             textureUrl={CharmanderTexture}
           />
         </View>

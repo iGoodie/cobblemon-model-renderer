@@ -1,4 +1,7 @@
 export namespace Bedrock {
+  type Vec2<T> = [T, T];
+  type Vec3<T> = [T, T, T];
+
   /**
    * @see https://learn.microsoft.com/en-us/minecraft/creator/reference/content/schemasreference/schemas/minecraftschema_geometry_1.12.0?view=minecraft-bedrock-stable
    */
@@ -56,16 +59,16 @@ export namespace Bedrock {
     /** override calculated value (set as the max keyframe or event time) and set animation length in seconds. */
     animation_length?: number;
 
-    position?: AnimationValues;
-    rotation?: AnimationValues;
-    scale?: AnimationValues;
+    position?: Animation;
+    rotation?: Animation;
+    scale?: Animation;
 
     // TODO: particle_effects
     // TODO: sound_effects
     // TODO: timeline
   }
 
-  type AnimationValues =
+  export type Animation =
     | MolangExpr
     | Vec3<MolangExpr>
     | {
@@ -73,13 +76,10 @@ export namespace Bedrock {
           | Vec3<MolangExpr>
           | {
               lerp_mode?: "linear" | "catmullrom";
-              pre?: Vec3<MolangExpr>;
-              post?: Vec3<MolangExpr>;
+              pre: Vec3<MolangExpr>;
+              post: Vec3<MolangExpr>;
             };
       };
-
-  type Vec2<T> = [T, T];
-  type Vec3<T> = [T, T, T];
 
   export interface GeoBone {
     name: string;
