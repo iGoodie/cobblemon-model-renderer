@@ -1,4 +1,4 @@
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
 import { CuboidMesh } from "lib/components/CuboidMesh/CuboidMesh";
 import {
   PivotGroup,
@@ -66,7 +66,10 @@ export function PokemonMesh(props: {
 
   const bonesConfig = props.geo["minecraft:geometry"].at(0)?.bones ?? [];
 
-  const texture = useLoader(THREE.TextureLoader, props.textureUrl);
+  const texture = useTexture(props.textureUrl, (texture) => {
+    texture.minFilter = THREE.NearestFilter;
+    texture.magFilter = THREE.NearestFilter;
+  });
 
   const { boneRefs, meshJsx } = useBoneMesh(bonesConfig, texture);
 
@@ -76,27 +79,15 @@ export function PokemonMesh(props: {
   );
 
   useEffect(() => {
-    texture.minFilter = THREE.NearestFilter;
-    texture.magFilter = THREE.NearestFilter;
     playAnimation("animation.bulbasaur.ground_idle");
     playAnimation("animation.charmander.ground_idle");
     playAnimation("animation.charizard.ground_idle");
     playAnimation("animation.squirtle.ground_idle");
-  }, [texture]);
+  }, []);
 
-  useFrame(() => {
-    if (ref.current) {
-      // boneRefs.current?.["head"]?.rotateY(Math.random() / 25);
-      ref.current.rotation.y = (-3 * Math.PI) / 4;
-      // ref.current.rotation.x = (-3 * Math.PI) / 4;
-      // ref.current.rotation.y += 0.006;
-
-      const bone = boneRefs.current["jaw"];
-      if (bone) {
-        // bone.scale.setY(Math.sin(Date.now()) / 2 + 1);
-      }
-    }
-  });
-
-  return <mesh ref={ref}>{meshJsx}</mesh>;
+  return (
+    <mesh ref={ref} rotation-y={(-3 * Math.PI) / 4}>
+      {meshJsx}
+    </mesh>
+  );
 }

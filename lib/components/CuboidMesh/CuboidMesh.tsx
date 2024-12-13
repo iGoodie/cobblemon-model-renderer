@@ -1,7 +1,8 @@
+import { ComputedAttribute } from "@react-three/drei";
 import { PivotGroup } from "lib/components/PivotGroup/PivotGroup";
 import { Bedrock } from "lib/types/Bedrock";
 import { thru } from "lib/utils/thru";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils";
 
@@ -124,23 +125,6 @@ export function CuboidMesh(props: {
   // const geo = new THREE.BoxGeometry(1,1,1);
   // geo.
 
-  useEffect(() => {
-    if (!geometryRef.current) return;
-
-    if (!Array.isArray(uv)) {
-      // TODO: Per-face attrib
-      return;
-    }
-
-    geometryRef.current.setAttribute(
-      "uv",
-      generateUVAttrib(uv, size, [
-        props.texture?.image.width,
-        props.texture?.image.height,
-      ])
-    );
-  }, []);
-
   return (
     <PivotGroup
       pivot={props.cube.pivot ?? [0, 0, 0]}
@@ -152,7 +136,7 @@ export function CuboidMesh(props: {
     >
       <mesh
         ref={meshRef}
-        scale={[mirror ? -1 : 1, 1, 1]}
+        scale-x={mirror ? -1 : 1}
         position={[
           origin[0] - inflation + (size[0] + inflation * 2) / 2,
           origin[1] - inflation + (size[1] + inflation * 2) / 2,
@@ -161,13 +145,28 @@ export function CuboidMesh(props: {
       >
         <boxGeometry
           ref={geometryRef}
+          attach="geometry"
           args={[
             size[0] + inflation * 2,
             size[1] + inflation * 2,
             size[2] + inflation * 2,
           ]}
-        />
+        >
+          {/* // TODO: Per-face attrib */}
+          {Array.isArray(uv) && (
+            <ComputedAttribute
+              name="uv"
+              compute={(geometry) => {
+                return generateUVAttrib(uv, size, [
+                  props.texture?.image.width,
+                  props.texture?.image.height,
+                ]);
+              }}
+            />
+          )}
+        </boxGeometry>
         <meshStandardMaterial
+          attach="material"
           map={props.texture}
           transparent
           alphaTest={0.00000001}
