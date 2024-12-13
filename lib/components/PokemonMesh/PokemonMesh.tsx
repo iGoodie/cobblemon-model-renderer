@@ -32,16 +32,20 @@ function useBoneMesh(bones: Bedrock.GeoBone[], texture?: THREE.Texture) {
           name={boneNode.name}
           key={boneNode.name}
           pivot={boneNode.pivot ?? [0, 0, 0]}
-          rotation={[
-            -degToRad(boneNode.rotation?.[0] ?? 0),
-            -degToRad(boneNode.rotation?.[1] ?? 0),
-            -degToRad(boneNode.rotation?.[2] ?? 0),
-          ]}
         >
-          {boneNode.children.length != 0 && renderBoneTree(boneNode)}
-          {boneNode.cubes?.map((cube, i) => (
-            <CuboidMesh key={i} cube={{ ...cube }} texture={texture} />
-          ))}
+          <PivotGroup
+            pivot={boneNode.pivot ?? [0, 0, 0]}
+            rotation={[
+              -degToRad(boneNode.rotation?.[0] ?? 0),
+              degToRad(boneNode.rotation?.[1] ?? 0),
+              -degToRad(boneNode.rotation?.[2] ?? 0),
+            ]}
+          >
+            {boneNode.children.length != 0 && renderBoneTree(boneNode)}
+            {boneNode.cubes?.map((cube, i) => (
+              <CuboidMesh key={i} cube={cube} texture={texture} />
+            ))}
+          </PivotGroup>
         </PivotGroup>
       );
     });
@@ -76,6 +80,7 @@ export function PokemonMesh(props: {
     texture.magFilter = THREE.NearestFilter;
     playAnimation("animation.bulbasaur.ground_idle");
     playAnimation("animation.charmander.ground_idle");
+    playAnimation("animation.charizard.ground_idle");
     playAnimation("animation.squirtle.ground_idle");
   }, [texture]);
 

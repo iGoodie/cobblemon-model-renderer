@@ -7,15 +7,18 @@ import { degToRad } from "three/src/math/MathUtils";
 
 import BulbasaurGeoJson from "../assets/models/bulbasaur.geo.json";
 import CharmanderGeoJson from "../assets/models/charmander.geo.json";
+import CharizardGeoJson from "../assets/models/charizard.geo.json";
 import SquirtleGeoJson from "../assets/models/squirtle.geo.json";
 import DebugGeoJson from "../assets/models/debug.geo.json";
 
 import BulbasaurAnimJson from "../assets/animations/bulbasaur.animation.json";
 import CharmanderAnimJson from "../assets/animations/charmander.animation.json";
+import CharizardAnimJson from "../assets/animations/charizard.animation.json";
 import SquirtleAnimJson from "../assets/animations/squirtle.animation.json";
 
 import BulbasaurTexture from "../assets/textures/bulbasaur_m.png";
 import CharmanderTexture from "../assets/textures/charmander.png";
+import CharizardTexture from "../assets/textures/charizard.png";
 import SquirtleTexture from "../assets/textures/squirtle.png";
 import DebugTexture from "../assets/textures/debug.png";
 
@@ -38,7 +41,7 @@ const App: React.FC = () => {
         <View id="pokemon1" style={{ width: 450, height: "100%" }}>
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
-          <ambientLight intensity={1.3} color={0xffffffff} />
+          <ambientLight intensity={1.6} color={0xffffffff} />
           <directionalLight position={[10, 10, -5]} />
           {/* <PerspectiveCamera
             makeDefault
@@ -62,18 +65,18 @@ const App: React.FC = () => {
         </View>
       </div>
 
-      <div>
-        <View id="pokemon2" style={{ width: 450, height: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <View id="pokemon2" style={{ width: 450, height: "50%" }}>
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
-          <ambientLight intensity={1.3} color={0xffffffff} />
+          <ambientLight intensity={1.6} color={0xffffffff} />
           <directionalLight position={[10, 10, -5]} />
-          {/* <PerspectiveCamera
-      makeDefault
-      fov={1}
-      zoom={0.0255}
-      position={[0, 0, 100]}
-    /> */}
           <OrthographicCamera
             makeDefault
             position={[-2, 66, 100]}
@@ -88,13 +91,51 @@ const App: React.FC = () => {
             textureUrl={CharmanderTexture}
           />
         </View>
+        <View id="pokemon2" style={{ width: 450, height: "50%" }}>
+          {/* <Common color="pink" /> */}
+          <color attach="background" args={["pink"]} />{" "}
+          <ambientLight intensity={1.6} color={0xffffffff} />
+          <directionalLight position={[10, 10, -5]} />
+          <OrthographicCamera
+            makeDefault
+            position={[-2, 76, 100]}
+            zoom={8}
+            rotation={[-0.5, 0, 0]}
+          />
+          <PokemonMesh
+            geo={CharizardGeoJson as Bedrock.ModelGeoConfig}
+            animations={
+              CharizardAnimJson as unknown as Bedrock.ActorAnimationConfig
+            }
+            textureUrl={CharizardTexture}
+          />
+        </View>
+        <View id="pokemon2" style={{ width: 450, height: "50%" }}>
+          {/* <Common color="pink" /> */}
+          <color attach="background" args={["pink"]} />{" "}
+          <ambientLight intensity={1.6} color={0xffffffff} />
+          <directionalLight position={[10, 10, -5]} />
+          <OrthographicCamera
+            makeDefault
+            position={[-2, 76, 100]}
+            zoom={8}
+            rotation={[-0.5, 0, 0]}
+          />
+          <PokemonMesh
+            geo={CharizardGeoJson as Bedrock.ModelGeoConfig}
+            animations={
+              CharizardAnimJson as unknown as Bedrock.ActorAnimationConfig
+            }
+            textureUrl={CharizardTexture}
+          />
+        </View>
       </div>
 
       <div>
         <View id="pokemon3" style={{ width: 450, height: "100%" }}>
           {/* <Common color="pink" /> */}
           <color attach="background" args={["pink"]} />{" "}
-          <ambientLight intensity={1.3} color={0xffffffff} />
+          <ambientLight intensity={1.6} color={0xffffffff} />
           <directionalLight position={[10, 10, -5]} />
           <OrthographicCamera
             makeDefault
@@ -111,7 +152,7 @@ const App: React.FC = () => {
           />
         </View>
       </div>
-      
+
       {/* <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <View id="sphere" style={{ width: 350, height: "50%" }}>
           <color attach="background" args={["pink"]} />{" "}

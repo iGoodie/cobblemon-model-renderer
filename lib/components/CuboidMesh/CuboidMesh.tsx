@@ -1,28 +1,35 @@
-import { useFrame } from "@react-three/fiber";
 import { PivotGroup } from "lib/components/PivotGroup/PivotGroup";
 import { Bedrock } from "lib/types/Bedrock";
 import { thru } from "lib/utils/thru";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils";
 
-function calcTexel(u: number, v: number, w: number, h: number) {
-  const left = u / 64;
-  const right = left + w / 64;
-  const bottom = 1 - v / 64;
-  const top = bottom - h / 64;
+function calcTexel(
+  u: number,
+  v: number,
+  w: number,
+  h: number,
+  tw: number = 64,
+  th: number = 64
+) {
+  const left = u / tw;
+  const right = left + w / tw;
+  const bottom = 1 - v / th;
+  const top = bottom - h / th;
   return [left, right, bottom, top];
 }
 
 function generateUVAttrib(
-  uv: [number, number],
-  [sx, sy, sz]: [number, number, number]
+  [u, v]: [number, number],
+  [sx, sy, sz]: [number, number, number],
+  [tw, th]: [number, number]
 ) {
   return new THREE.BufferAttribute(
     new Float32Array([
       ...thru(
         // 0 - East = +X = Right
-        calcTexel(uv[0] + sz + sx, uv[1] + sz, sz, sy),
+        calcTexel(u + sz + sx, v + sz, sz, sy, tw, th),
         // prettier-ignore
         ([left, right, bottom, top]) => [
           right, bottom,
@@ -34,7 +41,7 @@ function generateUVAttrib(
 
       ...thru(
         // 1 - West = -X = Left
-        calcTexel(uv[0], uv[1] + sz, sz, sy),
+        calcTexel(u, v + sz, sz, sy, tw, th),
         // prettier-ignore
         ([left, right, bottom, top]) => [
           right, bottom,
@@ -46,7 +53,7 @@ function generateUVAttrib(
 
       ...thru(
         // 2 - Up = +Y = Up
-        calcTexel(uv[0] + sz, uv[1], sx, sz),
+        calcTexel(u + sz, v, sx, sz, tw, th),
         // prettier-ignore
         ([left, right, bottom, top]) => [
           left,top,
@@ -58,7 +65,7 @@ function generateUVAttrib(
 
       ...thru(
         // 3 - Down = -Y = Down
-        calcTexel(uv[0] + sx + sz, uv[1], sx, sy),
+        calcTexel(u + sx + sz, v, sx, sy, tw, th),
         // prettier-ignore
         ([left, right, bottom, top]) => [
           left, bottom,
@@ -70,7 +77,7 @@ function generateUVAttrib(
 
       ...thru(
         // 4 - North = -Z = Back
-        calcTexel(uv[0] + sx + 2 * sz, uv[1] + sz, sx, sy),
+        calcTexel(u + sx + 2 * sz, v + sz, sx, sy, tw, th),
         // prettier-ignore
         ([left, right, bottom, top]) => [
           left, bottom,
@@ -82,7 +89,7 @@ function generateUVAttrib(
 
       ...thru(
         // 5 - South = +Z = Front
-        calcTexel(uv[0] + sz, uv[1] + sz, sx, sy),
+        calcTexel(u + sz, v + sz, sx, sy, tw, th),
         // prettier-ignore
         ([left, right, bottom, top]) => [
           right, bottom,
@@ -117,7 +124,7 @@ export function CuboidMesh(props: {
   // const geo = new THREE.BoxGeometry(1,1,1);
   // geo.
 
-  useFrame(() => {
+  useEffect(() => {
     if (!geometryRef.current) return;
 
     if (!Array.isArray(uv)) {
@@ -125,8 +132,14 @@ export function CuboidMesh(props: {
       return;
     }
 
-    geometryRef.current.setAttribute("uv", generateUVAttrib(uv, size));
-  });
+    geometryRef.current.setAttribute(
+      "uv",
+      generateUVAttrib(uv, size, [
+        props.texture?.image.width,
+        props.texture?.image.height,
+      ])
+    );
+  }, []);
 
   return (
     <PivotGroup
@@ -134,7 +147,7 @@ export function CuboidMesh(props: {
       rotation={[
         -degToRad(rotation[0]),
         degToRad(rotation[1]),
-        degToRad(rotation[2]),
+        -degToRad(rotation[2]),
       ]}
     >
       <mesh

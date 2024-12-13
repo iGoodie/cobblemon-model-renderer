@@ -27,6 +27,7 @@ export const PivotGroup = forwardRef<PivotGroupTransformation, Props>(
         scale: rootRef.current!.scale,
       };
       if (typeof ref === "function") ref(val);
+      else if (ref != null) ref.current = val;
     }, []);
 
     return (
