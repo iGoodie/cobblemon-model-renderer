@@ -25,9 +25,12 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "tsc -p tsconfig.node.json && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext ts,tsx",
+    "lint:fix": "pnpm run lint --fix",
+    "type-check": "tsc --project tsconfig.json --pretty --noEmit",
+    "ci": "pnpm run lint && pnpm run type-check"
   },
   "dependencies": {
     "@react-three/drei": "^9.120.3",
