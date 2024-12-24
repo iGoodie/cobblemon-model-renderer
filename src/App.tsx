@@ -1,8 +1,8 @@
 import { View } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
+import { PokemonPortrait } from "cobblemon-model-renderer";
 import { Bedrock } from "lib/types/Bedrock";
 import React, { useEffect, useRef } from "react";
-import { PokemonPortrait } from "src/components/PokemonPortrait";
 
 import BulbasaurGeoJson from "../assets/models/bulbasaur.geo.json";
 import CharizardGeoJson from "../assets/models/charizard.geo.json";
@@ -43,6 +43,7 @@ const App: React.FC = () => {
               animations:
                 BulbasaurAnimJson as unknown as Bedrock.ActorAnimationConfig,
               textureUrl: BulbasaurTexture,
+              initialAnimation: "animation.bulbasaur.ground_idle",
             }}
             viewportProps={{
               style: { width: 350, height: "calc(100vh - 40px)" },
@@ -62,6 +63,7 @@ const App: React.FC = () => {
                 animations:
                   CharmanderAnimJson as unknown as Bedrock.ActorAnimationConfig,
                 textureUrl: CharmanderTexture,
+                initialAnimation: "animation.charmander.ground_idle",
               }}
               viewportProps={{
                 style: { width: 500, height: "calc(35vh - 30px)" },
@@ -74,6 +76,7 @@ const App: React.FC = () => {
                 animations:
                   CharizardAnimJson as unknown as Bedrock.ActorAnimationConfig,
                 textureUrl: CharizardTexture,
+                initialAnimation: "animation.charizard.ground_idle",
               }}
               viewportProps={{
                 style: { width: 500, height: "calc(65vh - 20px)" },
@@ -87,6 +90,7 @@ const App: React.FC = () => {
               animations:
                 SquirtleAnimJson as unknown as Bedrock.ActorAnimationConfig,
               textureUrl: SquirtleTexture,
+              initialAnimation: "animation.squirtle.ground_idle",
             }}
             viewportProps={{
               style: { width: 350, height: "calc(100vh - 40px)" },
